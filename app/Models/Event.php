@@ -14,6 +14,16 @@ class Event extends Model
     /**
      * Gets the user the event belongs to.
      */
+
+      // Allow mass assignment for these fields
+    protected $fillable = [
+        'title',
+        'starts_at',
+        'ends_at',
+        'user_id',
+    ];
+
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

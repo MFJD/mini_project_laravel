@@ -19,7 +19,7 @@ defineProps({
   <table class="w-full text-sm text-left text-gray-500">
     <thead class="text-gray-700 uppercase bg-gray-50">
       <tr>
-        <th v-for="(heading, headingIndex) in headings" :key="`heading_${headingIndex}`">{{heading}}</th>
+        <th class="py-3 px-6" v-for="(heading, headingIndex) in headings" :key="`heading_${headingIndex}`">{{heading}}</th>
       </tr>
     </thead>
     <tbody>
