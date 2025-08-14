@@ -13,7 +13,6 @@ class EventController extends Controller
     public function index()
     {
         Request::validate([
-
             'starts_at' => ['nullable', 'date:Y-m-d'],
             'ends_at' => ['nullable', 'date:Y-m-d'],
         ]);
@@ -21,7 +20,10 @@ class EventController extends Controller
         return Inertia::render('Events/Index', [
             'starts_at' => Request::get('starts_at'),
             'ends_at' => Request::get('ends_at'),
-            'events' => Event::isBetween(Request::get('starts_at'), Request::get('ends_at'))->orderByDate()->get()
+            'events' => Event::where('user_id', auth()->id()) // Only user’s events
+            ->isBetween(Request::get('starts_at'), Request::get('ends_at'))
+            ->orderByDate()
+            ->get()
         ]);
     }
 
@@ -29,15 +31,17 @@ class EventController extends Controller
     {
         $data = Request::validate([
             'title' => ['required', 'max:255'],
-            'starts_at' => ['required', 'date:Y-m-d H:i'],
-            'ends_at' => ['required', 'date:Y-m-d H:i'],
+            'starts_at' => ['required', 'date_format:Y-m-d H:i'],
+            'ends_at' => ['required', 'date_format:Y-m-d H:i'],
         ]);
 
         Event::create([
             ...$data,
             'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at']),
-            'ends_at' => Carbon::createFromFormat('Y-m-d H:i', $data['ends_at'])
+            'ends_at' => Carbon::createFromFormat('Y-m-d H:i', $data['ends_at']),
+            'user_id' => auth()->id(), //  Assign current user
         ]);
+
         return Redirect::back();
     }
 
@@ -45,12 +49,14 @@ class EventController extends Controller
     {
         $data = Request::validate([
             'title' => ['required', 'max:255'],
-            'starts_at' => ['required', 'date:Y-m-d H:i']
+            'starts_at' => ['required', 'date:Y-m-d H:i'],
+            'ends_at' => ['required', 'date:Y-m-d H:i']
         ]);
 
         $event->update([
             ...$data,
-            'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at'])
+            'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at']),
+            'ends_at' => Carbon::createFromFormat('Y-m-d H:i', $data['ends_at'])
         ]);
 
         return Redirect::back();
@@ -58,8 +64,11 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
+        //Ensure the event belongs to the user
+    if ($event->user_id !== auth()->id()) {
+        abort(403, 'Unauthorized');
+    }
         $event->delete();
-
         return Redirect::back();
     }
 }
