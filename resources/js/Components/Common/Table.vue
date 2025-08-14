@@ -2,15 +2,11 @@
 defineProps({
   data: {
     type: Array,
-    default() {
-      return [];
-    },
+    default: () => [],
   },
   headings: {
     type: Array,
-    default() {
-      return [];
-    },
+    default: () => [],
   },
 });
 </script>
@@ -19,20 +15,28 @@ defineProps({
   <table class="w-full text-sm text-left text-gray-500">
     <thead class="text-gray-700 uppercase bg-gray-50">
       <tr>
-        <th class="py-3 px-6" v-for="(heading, headingIndex) in headings" :key="`heading_${headingIndex}`">{{heading}}</th>
+        <th v-for="(heading, index) in headings" :key="index" class="py-3 px-6">{{ heading }}</th>
       </tr>
     </thead>
+
     <tbody>
-      <tr
-        v-for="(row, rowIndex) in data"
-        :key="`row_${rowIndex}`"
-        class="border-b odd:bg-white even:bg-gray-50"
-      >
-        <slot name="row" :item="row" />
-      </tr>
+      <!-- Render rows if data exists -->
+      <template v-if="data.length">
+        <tr v-for="(row, index) in data" :key="index" class="border-b odd:bg-white even:bg-gray-50">
+          <slot name="row" :item="row" />
+        </tr>
+      </template>
+
+      <!-- Render empty slot if no data -->
+      <template v-else>
+        <slot name="empty">
+          <tr>
+            <td :colspan="headings.length" class="text-center  py-8 text-2xl text-gray-500">No data</td>
+          </tr>
+        </slot>
+      </template>
     </tbody>
   </table>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

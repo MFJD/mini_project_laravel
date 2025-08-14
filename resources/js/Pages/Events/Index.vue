@@ -56,62 +56,43 @@ const onDelete = () => {
             <div class="mb-3">
                 <div class="mb-6 flex flex-row justify-between items-end">
                     <div>
-                        <AddEditDialog
-                            :item-to-edit="itemToEdit"
-                            @close="itemToEdit = null"
-                        />
+                        <AddEditDialog :item-to-edit="itemToEdit" @close="itemToEdit = null" />
                     </div>
                 </div>
-                <Dialog
-                    :show="itemToDelete != null"
-                    @close="itemToDelete = null"
-                >
+                <Dialog :show="itemToDelete != null" @close="itemToDelete = null">
                     <template #header>Deleting event</template>
                     Are you sure you want to delete this event ?
                     <template #footer>
-                        <Button
-                            variant="secondary"
-                            class="mr-3"
-                            @click="itemToDelete = null"
-                            >Cancel</Button
-                        >
-                        <Button variant="danger" @click="onDelete"
-                            >Submit</Button
-                        >
+                        <Button variant="secondary" class="mr-3" @click="itemToDelete = null">Cancel</Button>
+                        <Button variant="danger" @click="onDelete">Submit</Button>
                     </template>
                 </Dialog>
             </div>
             <Table :data="events" :headings="['Title', 'Start Date', 'End Date', 'Actions']">
                 <template #row="{ item }">
                     <td>{{ item.title }}</td>
+                    <td>{{ moment(item.starts_at).format("HH:mm DD/MM/YYYY") }}</td>
+                    <td>{{ moment(item.ends_at).format("HH:mm DD/MM/YYYY") }}</td>
                     <td>
-                        {{ moment(item.starts_at).format("HH:mm DD/MM/YYYY") }}
-                    </td>
-                    <td>
-                        {{ moment(item.ends_at).format("HH:mm DD/MM/YYYY") }}
-                    </td>
-                    <td>
-                        <span
-                            class="px-2 text-gray-700 hover:text-blue-500 cursor-pointer transition"
-                        >
-                            <vue-feather
-                                type="edit"
-                                size="1.3rem"
-                                @click="itemToEdit = item"
-                            />
+                        <span class="px-2 text-gray-700 hover:text-blue-500 cursor-pointer transition">
+                            <vue-feather type="edit" size="1.3rem" @click="itemToEdit = item" />
                         </span>
-                        <span
-                            class="px-2 text-gray-700 hover:text-red-500 cursor-pointer transition"
-                        >
-                            <vue-feather
-                                type="trash"
-                                size="1.3rem"
-                                @click="itemToDelete = item"
-                            />
+                        <span class="px-2 text-gray-700 hover:text-red-500 cursor-pointer transition">
+                            <vue-feather type="trash" size="1.3rem" @click="itemToDelete = item" />
                         </span>
                     </td>
                 </template>
+
+                <!-- Add this slot for empty table -->
+                <template #empty>
+                    <tr>
+                        <td colspan="4" class="text-center py-6 font-thin text-xl text-gray-500">
+                            No data
+                        </td>
+                    </tr>
+                </template>
             </Table>
+
         </div>
     </AppLayout>
 </template>
