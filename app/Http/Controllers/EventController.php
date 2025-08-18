@@ -21,9 +21,9 @@ class EventController extends Controller
             'starts_at' => Request::get('starts_at'),
             'ends_at' => Request::get('ends_at'),
             'events' => Event::where('user_id', auth()->id()) // Only user’s events
-            ->isBetween(Request::get('starts_at'), Request::get('ends_at'))
-            ->orderByDate()
-            ->get()
+                ->isBetween(Request::get('starts_at'), Request::get('ends_at'))
+                ->orderByDate()
+                ->get()
         ]);
     }
 
@@ -52,7 +52,11 @@ class EventController extends Controller
             'starts_at' => ['required', 'date:Y-m-d H:i'],
             'ends_at' => ['required', 'date:Y-m-d H:i']
         ]);
-
+        
+        //Ensure the event belongs to the user
+        if ($event->user_id !== auth()->id()) {
+            abort(403);
+        }
         $event->update([
             ...$data,
             'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at']),
@@ -65,9 +69,9 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         //Ensure the event belongs to the user
-    if ($event->user_id !== auth()->id()) {
-        abort(403, 'Unauthorized');
-    }
+        if ($event->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
         $event->delete();
         return Redirect::back();
     }
