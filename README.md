@@ -1,6 +1,6 @@
 <h1 align="center">DateRangePicker Demo</h1>
 
-This project serves as a demo for a custom-made DateRangePicker component. It was made using Laravel 8, Vue3, InertiaJS and momentjs.
+This project serves as a demo for a CRUD for Event. It was made using Laravel 8.2.3, Vue3, InertiaJS and momentjs.
 
 ## Requirements
 
@@ -63,7 +63,7 @@ After running the docker application, several services are available to use :
 
 ## Usage
 
-In order to access the DateRangePicker and the events CRUD, you will first have to open the app, then login. A test user is automatically created during the installation phase :
+In order to access the events CRUD, you will first have to open the app, then login. A test user is automatically created during the installation phase :
 
 -   test@test.com
 -   password
