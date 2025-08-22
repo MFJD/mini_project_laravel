@@ -8,9 +8,9 @@ defineProps({
     type: String,
     required: true,
   },
-    type: {
+  type: {
     type: String,
-    default: "text", // default to text if not provided
+    default: "text",
   },
 });
 
@@ -19,7 +19,7 @@ defineEmits(["update:modelValue"]);
 const input = ref(null);
 
 onMounted(() => {
-  if (input.value.hasAttribute("autofocus")) {
+  if (input.value?.hasAttribute("autofocus")) {
     input.value.focus();
   }
 });
@@ -33,12 +33,13 @@ defineExpose({ focus: () => input.value.focus() });
       <span v-if="label">{{ label }}</span>
     </label>
     <input
-      :type=" type" 
-      :name="name"
       ref="input"
-      class="p-3 w-full outline-0 border border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm transition"
+      :type="type"
+      :name="name"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
+      v-bind="$attrs"  
+      class="p-3 w-full outline-0 border border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm transition"
     />
   </div>
 </template>
